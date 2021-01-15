@@ -7,12 +7,10 @@
 \usage{
 mod_choose_pipeline_ui(id)
 
-mod_choose_pipeline_server(id, dataType = NULL, package = NULL)
+mod_choose_pipeline_server(id, package = NULL)
 }
 \arguments{
 \item{id}{shiny id}
-
-\item{dataType}{xxx}
 
 \item{package}{xxx}
 
@@ -21,6 +19,8 @@ mod_choose_pipeline_server(id, dataType = NULL, package = NULL)
 \item{output}{internal}
 
 \item{session}{internal}
+
+\item{dataType}{xxx}
 }
 \description{
 A shiny Module.

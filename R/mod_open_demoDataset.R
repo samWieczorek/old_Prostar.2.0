@@ -117,9 +117,9 @@ mod_open_demoDataset_server <- function(id){
       # 
     })
     
-    mod_infos_dataset_server('infos', 
-                             obj = reactive({rv.openDemo$dataRead})
-    )
+    #mod_infos_dataset_server('infos', 
+    #                         obj = reactive({rv.openDemo$dataRead})
+    #)
     
     reactive({rv.openDemo$dataRead })
     

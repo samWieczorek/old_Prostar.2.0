@@ -30,8 +30,11 @@ mod_choose_pipeline_ui <- function(id){
                               'peptide'='peptide'), 
                   width='150px')
     ),
-     uiOutput(ns("selectWidgetPipeline")),
-     uiOutput(ns('describePipeline'))
+    div(
+      style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+      uiOutput(ns("selectWidgetPipeline"))
+    ),
+      uiOutput(ns('describePipeline'))
   )
 }
     

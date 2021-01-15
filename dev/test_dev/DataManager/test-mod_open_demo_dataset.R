@@ -17,16 +17,22 @@ actionBtnClass <- "btn-primary"
 ui <- fluidPage(
   tagList(
     div(
+      div(
       style="display:inline-block; vertical-align: middle; padding-right: 20px;",
       mod_choose_pipeline_ui("pipe")
     ),
-    
-    shinyjs::hidden(div(id='div_demoDataset',
-                        mod_open_demoDataset_ui('rl')
-                        )
-                    ),
-    shinyjs::hidden(actionButton('send', 'Load dataset')),
-    
+    div(
+      style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+      shinyjs::hidden(div(id='div_demoDataset',
+                          mod_open_demoDataset_ui('rl')
+      )
+      )
+    ),
+    div(
+      style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+      shinyjs::hidden(actionButton('load_dataset_btn', 'Load dataset', class=actionBtnClass))
+    )
+    ),
     
     uiOutput('show_pipeline')
   )
@@ -35,50 +41,42 @@ ui <- fluidPage(
 # Define server logic to summarize and view selected dataset ----
 server <- function(input, output, session) {
   
-  pipeline <- NULL
-  rv <- reactiveValues(
+
+  rv.core <- reactiveValues(
     demoData = NULL,
     pipeline = NULL,
     pipeline.name = NULL,
     dataIn = NULL
   )
   
-  rv$demoData <- mod_open_demoDataset_server("rl")
+  rv.core$demoData <- mod_open_demoDataset_server("rl")
   
-  rv$pipeline.name <- mod_choose_pipeline_server('pipe', 
+  rv.core$pipeline.name <- mod_choose_pipeline_server('pipe', 
                                         package = 'MSPipelines')
 
   observe({
-   # browser()
-    shinyjs::toggle('div_demoDataset', condition = !is.null(rv$pipeline.name()) && rv$pipeline.name() != 'None')
-    shinyjs::toggle('send', condition = !is.null(rv$demoData))
+    shinyjs::toggle('div_demoDataset', condition = !is.null(rv.core$pipeline.name()) && rv.core$pipeline.name() != 'None')
+    shinyjs::toggle('load_dataset_btn', condition = !is.null(rv.core$demoData()))
   })
   
-  observeEvent(req(rv$pipeline.name() != 'None'), {
-    
+  observeEvent(req(rv.core$pipeline.name() != 'None'), {
     print("Launch Magellan")
-    rv$pipeline <- Protein_Normalization$new('App')
-    rv$pipeline$server(dataIn = reactive({rv$dataIn}))
-    #rv$dataIn <- rv$demoData()$dataset
+    obj <- base::get(rv.core$pipeline.name())
+    rv.core$pipeline <- do.call(obj$new, list('App'))
+    #rv$pipeline <- Protein$new('App')
+    rv.core$pipeline$server(dataIn = reactive({rv.core$dataIn}))
   })
   
-  observeEvent(input$send, {
-    print(names(rv$demoData()))
-    rv$dataIn <- rv$demoData()
+  observeEvent(input$load_dataset_btn, {
+    print(names(rv.core$demoData()))
+    rv.core$dataIn <- rv.core$demoData()
     })
 
   
   output$show_pipeline <- renderUI({
-    req(rv$pipeline)
+    req(rv.core$pipeline)
     print('show_ui')
-    rv$pipeline$ui()
-  })
-  
-  observeEvent(rv$demoData(),{
-    print('demo dataset loaded')
-
-    print(rv$demoData()$dataset)
-    print(rv$demoData()$pipeline)
+    rv.core$pipeline$ui()
   })
   
 }

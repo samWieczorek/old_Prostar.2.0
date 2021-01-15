@@ -100,7 +100,7 @@ app_ui <- function(request) {
               
               
               dashboardSidebar(
-                sidebarMenu(
+                sidebarMenu(id = "sb",
                   # inactiveClass for import menus inactivation 
                   tags$head(tags$style(".inactiveLink {
                            pointer-events: none;
@@ -131,13 +131,64 @@ app_ui <- function(request) {
               ),
               
               dashboardBody(
-                tags$head(
+                tagList(
+                  tags$head(
                   tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
                 ),
                 
                 useShinyjs(),
                 
-                uiOutput('contenu_dashboardBody')
+                # body content
+                theme = shinythemes::shinytheme("cerulean"),
+                  tabItems(
+                    tabItem(tabName = "ProstarHome", class="active",
+                            mod_homepage_ui('home')),
+                    # tabItem(tabName = "openFile", h3("Open QFeature file"),
+                    #         mod_import_file_from_ui("open_file")),
+                    # tabItem(tabName = "convert", h3("Convert data"),
+                    #         mod_convert_ms_file_ui("convert_data")),
+                    tabItem(tabName = "demoData", 
+                            tagList(
+                              h3("Load a demo dataset"),
+                              div(
+                                div(
+                                  style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+                                  mod_choose_pipeline_ui("pipe")
+                                ),
+                                div(
+                                  style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+                                  shinyjs::hidden(
+                                    div(id='div_demoDataset',
+                                        mod_open_demoDataset_ui('demo_data')
+                                    )
+                                  )
+                                ),
+                                div(
+                                  style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+                                  shinyjs::hidden(actionButton('load_dataset_btn', 'Load dataset', class=actionBtnClass))
+                                )
+                              )
+                            )
+                    ),
+                    tabItem(tabName = "export", h3("Export")), # export module not yet
+                    tabItem(tabName = "globalSettings", h3('Global settings'),
+                            mod_settings_ui('global_settings')),
+                    tabItem(tabName = "releaseNotes", h3('Release notes'),
+                            mod_release_notes_ui('rl')),
+                    tabItem(tabName = "checkUpdates", h3('Check for updates'),
+                            mod_check_updates_ui('check_updates')),
+                    tabItem(tabName = "usefulLinks",
+                            mod_insert_md_ui('links_MD')),
+                    tabItem(tabName = "faq",
+                            mod_insert_md_ui('FAQ_MD')),
+                    tabItem(tabName = "bugReport", h3('Bug report'),
+                            mod_bug_report_ui("bug_report")),
+                     tabItem(tabName = "pipeline", h3('Pipeline'),
+                             uiOutput('show_pipeline')
+                             )
+                  )
+               # uiOutput('show_pipeline')
+              )
               )
             )
             # mod_navbar_menu_ui('mainMenu')

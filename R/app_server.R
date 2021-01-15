@@ -19,9 +19,9 @@ app_server <- function( input, output, session ) {
   
   
   rv.core <- reactiveValues(
-    
     pipeline = NULL,
-    
+    pipeline.name = NULL,
+    dataIn = NULL,
     
     # Current QFeatures object in Prostar
     current.obj = NULL,
@@ -45,6 +45,9 @@ app_server <- function( input, output, session ) {
     #   loadData = NULL
   )
   
+  rv.core$pipeline.name <- mod_choose_pipeline_server('pipe', 
+                                                 package = 'MSPipelines')
+  
   
   ## Get the return values of modules in charge of loading datasets
   rv.core$tmp_dataManager <- list(
@@ -63,74 +66,38 @@ app_server <- function( input, output, session ) {
   #   rv.core$current.pipeline <- rv.core$tmp_dataManager$convert()$pipeline
   #   })
   
+  observe({
+    shinyjs::toggle('div_demoDataset', condition = !is.null(rv.core$pipeline.name()) && rv.core$pipeline.name() != 'None')
+    shinyjs::toggle('load_dataset_btn', condition = !is.null(rv.core$tmp_dataManager$openDemo()))
+  })
   
   observeEvent(input$browser,{browser()})
   
-  observeEvent(rv.core$tmp_dataManager$openDemo(),{
-    print('demo dataset loaded')
-    browser()
-    rv.core$temp.current.obj <- rv.core$tmp_dataManager$openDemo()$dataset
-    rv.core$current.pipeline <- rv.core$tmp_dataManager$openDemo()$pipeline
+  observe({
+    req(rv.core$pipeline.name() != 'None')
+    print("Launch Magellan")
+    obj <- base::get(rv.core$pipeline.name())
+    rv.core$pipeline <- do.call(obj$new, list('App'))
+    rv.core$pipeline$server(dataIn = reactive({rv.core$dataIn}))
   })
   
-  
-  #  #Once the type of pipeline is known (ie a dataset has been loaded),
-  #  #call the server parts of the processing modules that belongs
-  #  # to this pipeline
-  observeEvent(req(rv.core$current.pipeline), {
+  observeEvent(input$load_dataset_btn, {
     #browser()
-    rv.core$pipeline <- Protein_Normalization$new('Pipeline')
-    rv.core$pipeline$server(dataIn = reactive({rv.core$current.obj}))
-    #shinyjs::show('div_pipeline')
+    print(names(rv.core$tmp_dataManager$openDemo()))
+    updateTabItems(session, "sb", "pipeline")
+    rv.core$dataIn <- rv.core$tmp_dataManager$openDemo()
+    rv.core$pipeline$ToggleState_Screens(TRUE, 1:rv.core$pipeline$length)
+    
   })
+
   
   observeEvent(input$ReloadProstar, { js$reset()})
   
   
-  
-  
-  output$contenu_dashboardBody <- renderUI({
-    
-    # body content
-     fluidPage(
-       mod_test_ui('tutu'),
-       theme = shinythemes::shinytheme("cerulean"),
-       tabItems(
-         tabItem(tabName = "ProstarHome", class="active",
-                 mod_homepage_ui('home')),
-         # tabItem(tabName = "openFile", h3("Open QFeature file"),
-         #         mod_import_file_from_ui("open_file")),
-         # tabItem(tabName = "convert", h3("Convert data"),
-         #         mod_convert_ms_file_ui("convert_data")),
-         tabItem(tabName = "demoData", h3("Load a demo dataset"),
-                 mod_open_demoDataset_ui("demo_data")),
-         tabItem(tabName = "export", h3("Export")), # export module not yet
-         tabItem(tabName = "globalSettings", h3('Global settings'),
-                 mod_settings_ui('global_settings')),
-         tabItem(tabName = "releaseNotes", h3('Release notes'),
-                 mod_release_notes_ui('rl')),
-         tabItem(tabName = "checkUpdates", h3('Check for updates'),
-                 mod_check_updates_ui('check_updates')),
-         tabItem(tabName = "usefulLinks",
-                 mod_insert_md_ui('links_MD')),
-         tabItem(tabName = "faq",
-                 mod_insert_md_ui('FAQ_MD')),
-         tabItem(tabName = "bugReport", h3('Bug report'),
-                 mod_bug_report_ui("bug_report")),
-         tabItem(tabName = "pipeline", h3('Pipeline'),
-                 uiOutput('show_pipeline')
-                 )
-         )
-     )
-    
-  })
-  
-  output$show_pipeline <- renderUI({ 
-    print('toto')
-    #browser()
+  output$show_pipeline <- renderUI({
     req(rv.core$pipeline)
-    print('toto2')
-    
+    rv.core$dataIn
+    print('show_ui')
     rv.core$pipeline$ui()
   })
   
