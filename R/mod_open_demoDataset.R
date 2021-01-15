@@ -25,7 +25,7 @@
 #' @importFrom shiny NS tagList 
 #' @import shinyjs
 #' 
-mod_open_demo_dataset_ui <- function(id){
+mod_open_demoDataset_ui <- function(id){
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
@@ -34,20 +34,12 @@ mod_open_demo_dataset_ui <- function(id){
         style="display:inline-block; vertical-align: middle; padding-right: 20px;",
         uiOutput(ns("chooseDemoDataset")),
         uiOutput(ns("linktoDemoPdf"))
-      ),
-      div(
-        style="display:inline-block; vertical-align: middle; padding-right: 20px;",
-        selectInput(ns("dataType"), 'Data type', 
-                    choices = c('None'='None', 'protein'='protein', 'peptide'='peptide'), 
-                    width='150px')
-      ),
-      div(
-        style="display:inline-block; vertical-align: middle; padding-right: 20px;",
-        mod_choose_pipeline_ui(ns("pipe") )
-      )),
-    shinyjs::hidden(actionButton(ns("loadMagellan"), "Load Magellan",class = actionBtnClass)),
-    hr(),
-    mod_infos_dataset_ui(ns("infos"))
+      )
+      )
+      
+   # shinyjs::hidden(actionButton(ns("loadMagellan"), "Load Magellan",class = actionBtnClass))
+    #hr(),
+    #mod_infos_dataset_ui(ns("infos"))
   )
 }
 
@@ -66,7 +58,7 @@ mod_open_demo_dataset_ui <- function(id){
 #' @importFrom shinyjs info
 #' @import QFeatures
 #' 
-mod_open_demo_dataset_server <- function(id){
+mod_open_demoDataset_server <- function(id){
   
   moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -77,34 +69,22 @@ mod_open_demo_dataset_server <- function(id){
       pipe = NULL,
       dataOut = NULL
     )
-    
-    rv.openDemo$pipe <- mod_choose_pipeline_server('pipe', 
-                                                   dataType = reactive({input$dataType}), 
-                                                   package = 'MSPipelines')
-    
-    
-    observe({
-      print(paste0('toto = ', rv.openDemo$pipe()))
-    })
-    
-    observe({
-      shinyjs::toggle('pipe', condition=  req(rv.openDemo$dataRead) && input$dataType != 'None')
-    })
-    
+
+
     
     ### function for demo mode
     output$chooseDemoDataset <- renderUI({
       print("DAPARdata is loaded correctly")
       selectInput(ns("demoDataset"),
                   "Demo dataset",
-                  choices = utils::data(package="DAPARdata2")$results[,"Item"],
+                  choices = c('None', utils::data(package="DAPARdata2")$results[,"Item"]),
                   selected = character(0),
                   width='200px')
     })
     
     
     
-    observeEvent(input$demoDataset, {
+    observeEvent(req(input$demoDataset != 'None'), {
       nSteps <- 1
       withProgress(message = '',detail = '', value = 0, {
         incProgress(1/nSteps, detail = 'Loading dataset')
@@ -115,23 +95,15 @@ mod_open_demo_dataset_server <- function(id){
                       Please choose another one.")
           return(NULL)
         }
-        
-        # MultiAssayExperiment::metadata(rv.openDemo$dataRead)$pipelineType <- rv.openDemo$pipe()
-        # rv.openDemo$dataOut <- list(pipeline.name = rv.openDemo$pipe(),
-        #                             dataset = rv.openDemo$dataRead
-        # )
       }) # End withProgress
     }) # End observeEvent
     
     
-    
-    observeEvent(input$loadMagellan, {
-      
-      rv.demo$pipe()
-      rv.openDemo$dataRead
-      
-    })
-    
+    # 
+    # observeEvent(input$loadMagellan, {
+    #   print(paste0('dataset = ', paste0(names(rv.openDemo$dataRead), collapse=' ')))
+    # })
+    # 
     
     output$linktoDemoPdf <- renderUI({
       req(input$demoDataset)
@@ -149,10 +121,7 @@ mod_open_demo_dataset_server <- function(id){
                              obj = reactive({rv.openDemo$dataRead})
     )
     
-    reactive({list(pipeline = rv.openDemo$pipe(),
-                   dataset = rv.openDemo$dataRead
-                   )
-      })
+    reactive({rv.openDemo$dataRead })
     
     
   })

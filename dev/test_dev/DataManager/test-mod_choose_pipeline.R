@@ -1,4 +1,4 @@
-source(file.path('../../../R/DataManager', 'mod_choose_pipeline.R'), local=TRUE)$value
+source(file.path('../../../R', 'mod_choose_pipeline.R'), local=TRUE)$value
 
 
 ui <- fluidPage(
@@ -16,8 +16,11 @@ server <- function(input, output, session) {
    )
   
   rv$res <- mod_choose_pipeline_server('pipe', 
-                                       dataType = reactive({'protein'}), 
                                        package = 'MSPipelines')
+  
+  observe({
+    print(rv$res())
+  })
 
 }
 
