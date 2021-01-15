@@ -1,0 +1,14 @@
+Package: Prostar.2.0
+Title: PKG_TITLE
+Version: 0.0.0.9000
+Authors@R: person('Samuel', 'Wieczorek', email = 'samuel.wieczorek@cea.fr', role = c('cre', 'aut'))
+Description: Prostar 2.0 provides a GUI interface for DAPAR.
+License: What license is it under?
+Imports: 
+    config,
+    golem,
+    shiny,
+    DAPARdata2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
