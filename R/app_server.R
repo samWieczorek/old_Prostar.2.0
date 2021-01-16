@@ -87,18 +87,19 @@ app_server <- function( input, output, session ) {
     updateTabItems(session, "sb", "pipeline")
     rv.core$dataIn <- rv.core$tmp_dataManager$openDemo()
     rv.core$pipeline$ToggleState_Screens(TRUE, 1:rv.core$pipeline$length)
-    
+    shinyjs::toggleState('toto', TRUE)
   })
 
   
   observeEvent(input$ReloadProstar, { js$reset()})
   
-  
+  # https://github.com/daattali/shinyjs/issues/74
   output$show_pipeline <- renderUI({
     req(rv.core$pipeline)
-    rv.core$dataIn
-    print('show_ui')
-    rv.core$pipeline$ui()
+    if (!is.null(rv.core$dataIn))
+      rv.core$pipeline$ui()
+    else
+      shinysjs::disabled(rv.core$pipeline$ui())
   })
   
   

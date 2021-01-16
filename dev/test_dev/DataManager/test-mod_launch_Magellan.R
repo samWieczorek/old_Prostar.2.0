@@ -11,7 +11,7 @@ source(file.path('../../../R', 'mod_infos_dataset.R'), local=TRUE)$value
 source(file.path('../../../R', 'mod_format_DT.R'), local=TRUE)$value
 source(file.path('../../../R', 'global.R'), local=TRUE)$value
 source(file.path('../../../R', 'mod_open_demoDataset.R'), local=TRUE)$value
-
+source(file.path('../../../R', 'mod_launch_magellan.R'), local=TRUE)$value
 actionBtnClass <- "btn-primary"
 
 ui <- fluidPage(
