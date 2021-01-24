@@ -1,6 +1,6 @@
 library(shiny)
 #setwd("~/TELETRAVAIL/github_DAPARforFeatures/Prostar2/dev/prostar_NvCSS/")
-setwd("~/Github/AdaptedForFeatures/Prostar2/dev/prostar_NvCSS/")
+#setwd("~/Github/AdaptedForFeatures/Prostar2/dev/prostar_NvCSS/")
 
 ui <- fluidPage(
   
