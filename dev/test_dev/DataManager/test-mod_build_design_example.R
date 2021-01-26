@@ -1,7 +1,7 @@
 library(highcharter)
 
 
-source(file.path('../../R/DataManager', 'mod_build_design_example.R'), local=TRUE)$value
+source(file.path('../../../R', 'mod_build_design_example.R'), local=TRUE)$value
 
 
 ui <- fluidPage(
