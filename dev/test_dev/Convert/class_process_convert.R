@@ -12,14 +12,9 @@ Convert = R6Class(
   inherit = Magellan::Process,
   private = list(
     .config = list(name = 'Convert',
-                   steps = c('Description', 'SelectFile', 'QuantiData', 'Design'),
-                   mandatory = c(T, T, T, T)
+                   steps = c('Description', 'SelectFile', 'QuantiData', 'Design', 'Convert'),
+                   mandatory = c(T, T, T, T, T)
     )
-    
-    # .config = list(name = 'Convert',
-    #                steps = c('Description', 'SelectFile', 'DataId', 'QuantiData', 'BuildDesign', 'Convert'),
-    #                mandatory = c(T, T, T, T, T, T)
-    # )
   ),
 
   
@@ -49,7 +44,7 @@ Convert = R6Class(
       mod_format_DT_server("overview_convertData", table2show=reactive({GetDatasetOverview()}))
       
       GetDatasetOverview <- reactive({
-        req(self$rv$dataIn)
+        req(self$self$process.var$dataIn)
         
         
         columns <- c("Number of samples",
@@ -61,7 +56,7 @@ Convert = R6Class(
         
         do <- data.frame(Definition = columns,
                          Value = rep(0,length(columns)))
-        last.se <- self$rv$dataIn[[ength(self$rv$dataIn)]]
+        last.se <- self$self$process.var$dataIn[[ength(self$self$process.var$dataIn)]]
         intensities.tab <- assay(last.se)
         NA.count <- length(which(is.na(intensities.tab)==TRUE))
         pourcentage <- 100 * round(NA.count/(ncol(intensities.tab)*nrow(intensities.tab)), digits=4)
@@ -196,7 +191,7 @@ Convert = R6Class(
       
       output$warningNonUniqueID <- renderUI({
         #req(input$choose_global_id_ui != 'AutoID')
-        #req(self$rv$rawData2convert)
+        #req(self$self$process.var$rawData2convert)
         
         req(input$global_id)
         req(self$process.var$rawData2convert)
@@ -989,184 +984,104 @@ mod_build_design_example_server("designExamples")
             )
       })
 
-      }
+      },
 
-  #   #---------------------------------------------------------------------------------
-  #   #----------------------------- Step 6: Convert UI --------------------------------
-  #   #---------------------------------------------------------------------------------
-  #   Convert_ui = function(){
-  #     tagList(
-  #       br(), br(),
-  #       mod_format_DT_ui(self$ns("overview_convertData")),
-  #       uiOutput(self$ns("conversionDone")),
-  #       p("Once the 'Load' button (above) clicked, you will be automatically redirected to Prostar home page. 
-  #       The dataset will be accessible within Prostar interface and processing menus will be enabled. 
-  #       However, all importing functions ('Open MSnset', 'Demo data' and 'Convert data') will be disabled 
-  #       (because successive dataset loading can make Prostar unstable). To work on another dataset, use first 
-  #       the 'Reload Prostar' functionality from the 'Dataset manager' menu: it will make Prostar restart 
-  #         with a fresh R session where import functions are enabled.")
-  #       )
-  #   },
-  #   
-  #   
-  #   #---------------------------------------------------------------------------------
-  #   #--------------------------- Step 6: Convert server ------------------------------
-  #   #---------------------------------------------------------------------------------
-  #   
-  #   Convert_server = function(){
-  #     
-  #     
-  #     output$convertFinalStep <- renderUI({
-  #       req(rv$designChecked)
-  #       req(rv$designChecked$valid)
-  #     
-  #       tagList(
-  #         uiOutput(self$ns("checkAll_convert"), width="50"),
-  #         htmlOutput(self$ns("msgAlertCreateMSnset")),
-  #         hr(),
-  #         textInput(self$ns("filenameToCreate"),"Enter the name of the study"),
-  #         actionButton(self$ns("createMSnsetButton"),"Convert data", class = actionBtnClass),
-  #         uiOutput(self$ns("warningCreateMSnset"))
-  #       )
-  #     })
-  #     
-  #     
-  #     output$conversionDone <- renderUI({
-  #       req(rv$current.obj)
-  #        
-  #       h4("The conversion is done. Your dataset has been automatically loaded 
-  #       in memory. Now, you can switch to the Descriptive statistics panel to 
-  #          vizualize your data.")
-  #       
-  #     })
-  #     
-  #     output$warningCreateMSnset <- renderUI({
-  #       if (isTRUE(input$selectIdent)){
-  #         colNamesForOriginofValues <- shinyValue("colForOriginValue_",
-  #                                                 nrow(quantiDataTable()))
-  #         
-  #         if (length(which(colNamesForOriginofValues == "None")) >0){
-  #           text <- "<font color=\"red\"> Warning: The MSnset cannot be created because the identification 
-  #           method are not fully filled.  <br>"
-  #           HTML(text)
-  #         }
-  #       }
-  #     })
-  # 
-  #     #######################################
-  #     observeEvent(input$createMSnsetButton, ignoreInit = TRUE,{
-  # 
-  #       colNamesForOriginofValues <- NULL
-  #       if (isTRUE(input$selectIdent)) {
-  #         colNamesForOriginofValues <- shinyValue("colForOriginValue_", 
-  #                                                 nrow(quantiDataTable())
-  #                                                 )
-  #         if (length(which(colNamesForOriginofValues == "None")) >0){ return (NULL)   }
-  #       } 
-  #       
-  #       isolate({
-  #         result = tryCatch(
-  #           {
-  #             ext <- GetExtension(self$rv$file2convert$name)
-  #             txtTab <-  paste("tab1 <- read.csv(\"", self$rv$file2convert$name,
-  #                              "\",header=TRUE, sep=\"\t\", as.is=T)",  sep="")
-  #             txtXls <-  paste("tab1 <- read.xlsx(",self$rv$file2convert$name,
-  #                              ",sheet=", input$XLSsheets,")",sep="")
-  #             switch(ext,
-  #                    txt = writeToCommandLogFile(txtTab),
-  #                    csv = writeToCommandLogFile(txtTab),
-  #                    tsv = writeToCommandLogFile(txtTab),
-  #                    xls= writeToCommandLogFile(txtXls),
-  #                    xlsx = writeToCommandLogFile(txtXls)
-  #             )
-  #             
-  #             input$filenameToCreate
-  #             self$rv$rawData2convert
-  #             
-  #             tmp.eData.box <- input$quanti_data
-  #             indexForEData <- match(tmp.eData.box, colnames(self$rv$rawData2convert))
-  #             if (!is.null(self$process.var$newOrder)){
-  #               tmp.eData.box <- tmp.eData.box[self$process.var$newOrder]
-  #               indexForEData <- indexForEData[self$process.var$newOrder]
-  #             }
-  #             
-  #             indexForFData <- seq(1, ncol(self$rv$rawData2convert))[-indexForEData]
-  #             
-  #             indexForchoose_global_id_ui <- NULL
-  #             if (input$choose_global_id_ui !="AutoID") {
-  #               indexForchoose_global_id_ui <- match(input$choose_global_id_ui, colnames(self$rv$rawData2convert))
-  #             }
-  #             
-  #             
-  #             metadata <- hot_to_r(input$hot)
-  #             logData <- (input$checkDataLogged == "no")
-  #             
-  #             
-  #             indexForOriginOfValue <- NULL
-  #             if (!is.null(colNamesForOriginofValues) && (length(grep("None", colNamesForOriginofValues))==0)  && (sum(is.na(colNamesForOriginofValues)) == 0)){
-  #               for (i in 1:length(tmp.eData.box)){
-  #                 indexForOriginOfValue <- c(indexForOriginOfValue, which(colnames(self$rv$rawData2convert) == input[[paste0("colForOriginValue_", i)]]))
-  #               }
-  #             }
-  #             
-  #             
-  #             versions <- list(Prostar_Version = 
-  #                                installed.packages(lib.loc = Prostar.loc)["Prostar","Version"],
-  #                              DAPAR_Version = 
-  #                                installed.packages(lib.loc = DAPAR.loc)["DAPAR","Version"]
-  #             )
-  #             options(digits=15)
-  #             
-  #             tmp <- DAPAR::createMSnset(file = self$rv$rawData2convert, 
-  #                                        metadata = metadata, 
-  #                                        indExpData = indexForEData, 
-  #                                        indFData = indexForFData, 
-  #                                        indiceID = indexForchoose_global_id_ui,
-  #                                        indexForOriginOfValue = indexForOriginOfValue,
-  #                                        logData = logData, 
-  #                                        replaceZeros = input$replaceAllZeros,
-  #                                        pep_prot_data = input$typeOfData,
-  #                                        proteinId =  gsub(".", "_", input$protein_id, fixed=TRUE),
-  #                                        versions = versions
-  #             )
-  #             #ClearUI()
-  #            # ClearMemory()
-  #             rv$current.obj <- tmp
-  #             
-  #             rv$current.obj.name <- input$filenameToCreate
-  #             rv$indexNA <- which(is.na(exprs(rv$current.obj)))
-  #             
-  #             l.params <- list(filename = input$filenameToCreate)
-  #             
-  #             loadObjectInMemoryFromConverter()
-  #             
-  #             updateTabsetPanel(session, "tabImport", selected = "Convert")
-  #           },
-  #           # warning = function(w) {
-  #           #   if (conditionMessage(w) %in% c("NaNs produced", "production de NaN")){
-  #           #     shinyjs::info(paste("Warning : Your original dataset may contain negative values",
-  #           #                         "so that they cannot be logged. Please check back the dataset or", 
-  #           #                         "the log option in the first tab.",
-  #           #                         sep=" "))
-  #           #   } else {
-  #           #     shinyjs::info(paste("Warning in CreateMSnSet",":",
-  #           #                         conditionMessage(w), 
-  #           #                         sep=" "))
-  #           #   }
-  #           # }, 
-  #           error = function(e) {
-  #             shinyjs::info(paste("Error :","CreateMSnSet",":",
-  #                                 conditionMessage(e), 
-  #                                 sep=" "))
-  #           }, finally = {
-  #             #cleanup-code 
-  #           })
-  #         
-  #         
-  #         
-  #       })
-  #   })
+    #---------------------------------------------------------------------------------
+    #----------------------------- Step 6: Convert UI --------------------------------
+    #---------------------------------------------------------------------------------
+    Convert_ui = function(){
+      tagList(
+        shinyjs::hidden(
+          div(id = self$ns('FinalStep'),
+              tagList(
+                textInput(self$ns("filenameToCreate"), "Enter the name of the dataset"),
+                actionButton(self$ns("btn_validate_convert"), 
+                             "Convert data", 
+                             class = actionBtnClass)
+                )
+              )
+        ),
+        
+        mod_format_DT_ui(self$ns("overview_convertData")),
+        
+        shinyjs::hidden(
+          div(id = self$ns('ConversionDone'),
+              h4("The conversion is done. Your dataset has been automatically loaded 
+              in memory. Now, you can switch to the Descriptive statistics panel to 
+                 vizualize your data."),
+              p("Once the 'Load' button (above) clicked, you will be automatically redirected to Prostar home page. 
+              The dataset will be accessible within Prostar interface and processing menus will be enabled. 
+              However, all importing functions ('Open MSnset', 'Demo data' and 'Convert data') will be disabled 
+              (because successive dataset loading can make Prostar unstable). To work on another dataset, use first 
+              the 'Reload Prostar' functionality from the 'Dataset manager' menu: it will make Prostar restart 
+                with a fresh R session where import functions are enabled.")
+          )
+      )
+      )
+    },
+
+
+    #---------------------------------------------------------------------------------
+    #--------------------------- Step 6: Convert server ------------------------------
+    #---------------------------------------------------------------------------------
+
+    Convert_server = function(session, input, output){
+
+observe({
+  req(self$process.var$designChecked)
+  self$rv$dataIn
+  
+  shinyjs::toggle('FinalStep', condition = isTRUE(self$process.var$designChecked$valid))
+  shinyjs::toggle('ConversionDone', condition = !is.null(self$rv$dataIn) && !is.na(self$rv$dataIn))
+})
+
+
+      observeEvent(input$btn_validate_convert, ignoreInit = TRUE,{
+        
+        #  Prepare quantitative data indices
+        tmp.eData.box <- input$quanti_data
+        indexForQuantiData <- match(tmp.eData.box, colnames(self$process.var$rawData2convert))
+        if (!is.null(self$process.var$newOrder)){
+          tmp.eData.box <- tmp.eData.box[self$process.var$newOrder]
+          indexForQuantiData <- indexForQuantiData[self$process.var$newOrder]
+          }
+        
+        # Prepare colnames for Origin of values (type of identification)
+        colNamesForOriginofValues <- NULL
+        if (isTRUE(input$selectIdent)) {
+          colNamesForOriginofValues <- shinyValue("colForOriginValue_",
+                                                  nrow(quantiDataTable())
+                                                  )
+          #if (length(which(colNamesForOriginofValues == "None")) >0){ return (NULL)   }
+        }
+        #       indexForOriginOfValue <- NULL
+        #       if (!is.null(colNamesForOriginofValues) && (length(grep("None", colNamesForOriginofValues))==0)  && (sum(is.na(colNamesForOriginofValues)) == 0)){
+        #         for (i in 1:length(tmp.eData.box)){
+        #           indexForOriginOfValue <- c(indexForOriginOfValue, which(colnames(self$self$process.var$rawData2convert) == input[[paste0("colForOriginValue_", i)]]))
+        #         }
+        #       }
+        
+
+        
+        # Prepare versions info
+        .versions <- list(Prostar_Version = installed.packages(lib.loc = Prostar.loc)["Prostar.2.0","Version"],
+                          DAPAR_Version = installed.packages(lib.loc = DAPAR.loc)["DAPAR2","Version"]
+                          )
+        withProgress(message = 'Converting dataset',detail = '', value = 100, {
+        self$rv$dataIn <- DAPAR2::createQFeatures(data = self$process.var$rawData2convert, 
+                                                  sample = self$process.var$designTable, 
+                                                  indExpData = indexForQuantiData, 
+                                                  keyId = input$choose_global_id_ui, 
+                                                  namesOrigin = colNamesForOriginofValues,
+                                                  logTransform = input$checkDataLogged == "no", 
+                                                  forceNA = input$replaceAllZeros,
+                                                  typeOfData =  input$typeOfData,
+                                                  parentProtId = gsub(".", "_", input$protein_id, fixed=TRUE)
+                                                  )
+        })
+        self$ValidateCurrentPos()
+    })
       
-  #  }
+    }
   )
 )

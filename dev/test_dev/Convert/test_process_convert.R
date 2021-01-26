@@ -32,14 +32,16 @@ server = function(input, output){
   utils::data(Exp1_R25_prot, package='DAPARdata2')
   
   rv <-reactiveValues(
-    convert = NULL
+    convert = NULL,
+    result = NULL
   )
   #conv$server(dataIn = reactive({rv$dataIn}))
   
   rv$convert <- Convert$new('App2')
   
   observe({
-    rv$convert$server(dataIn = reactive({rv$dataIn}))
+    rv$result <- rv$convert$server(dataIn = reactive({rv$dataIn}))
+    print(names(rv$result()$value))
   })
 
   
