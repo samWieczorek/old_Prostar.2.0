@@ -15,12 +15,17 @@
 #' @importFrom shiny NS tagList 
 mod_homepage_ui <- function(id){
   ns <- NS(id)
+  browser()
   tagList(
     uiOutput(ns("citationText")),
     tags$hr(),
     tags$div(
       style="padding: 0 50px; float: left;",
-      img(src='www/images/LogoProstarComplet.png', width='150px', height='150px')
+      img(src=base64enc::dataURI(file=system.file('app/www/images', 
+                                                  'LogoProstarComplet.png', package='Prostar.2.0'), 
+                                 mime="image/png"), 
+          width='150px', 
+          height='150px')
     ),
     tags$div(
       style="margin-top: 50px;",

@@ -85,7 +85,7 @@ app_server <- function( input, output, session ) {
     #browser()
     print(names(rv.core$tmp_dataManager$openDemo()))
     updateTabItems(session, "sb", "pipeline")
-    shinyjs::delay(100,rv.core$dataIn <- rv.core$tmp_dataManager$openDemo())
+    shinyjs::delay(100, rv.core$dataIn <- rv.core$tmp_dataManager$openDemo())
   })
 
   
