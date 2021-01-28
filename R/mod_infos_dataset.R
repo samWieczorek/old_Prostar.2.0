@@ -62,6 +62,7 @@ mod_infos_dataset_server <- function(id, obj){
     
     observe({
       req(obj())
+      print(obj())
       if (class(obj()) != 'QFeatures')
       {
         warning("'obj' is not of class 'QFeatures'")

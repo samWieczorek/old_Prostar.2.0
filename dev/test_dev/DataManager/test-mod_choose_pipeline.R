@@ -16,9 +16,11 @@ server <- function(input, output, session) {
    )
   
   rv$res <- mod_choose_pipeline_server('pipe', 
+                                       dataType = 'protein',
                                        package = 'MSPipelines')
   
   observe({
+    rv$res()
     print(rv$res())
   })
 

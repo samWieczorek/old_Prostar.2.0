@@ -108,24 +108,58 @@ app_ui <- function(request) {
                            }")),
                   # Menus and submenus in sidebar
                   br(),
-                  menuItem("Home", tabName = "ProstarHome", icon = icon("home"),selected = TRUE
-                  ),
+                  menuItem("Home", 
+                           tabName = "ProstarHome", 
+                           icon = icon("home"),
+                           selected = TRUE
+                           ),
                   hr(),
-                  menuItem("Data Manager", icon = icon("folder"), startExpanded = TRUE,
-                           menuSubItem("Open QFeature file", tabName = "openFile"),
-                           menuSubItem("Convert Data", tabName = "convert"),
-                           menuSubItem("Demo data", tabName = "demoData"),
-                           menuSubItem("Export Results", tabName = "export")),
+                  menuItem("Data Manager", 
+                           icon = icon("folder"), 
+                           startExpanded = TRUE,
+                           menuSubItem("Open QFeature file", 
+                                       tabName = "openFile"
+                                       ),
+                           menuSubItem("Convert Data", 
+                                       tabName = "convert"
+                                       ),
+                           menuSubItem("Demo data", 
+                                       tabName = "demoData"
+                                       ),
+                           menuSubItem("Export Results", 
+                                       tabName = "export"
+                                       )
+                           ),
                   hr(),
-                  menuItem("Pipeline", tabName = "pipeline", icon = icon("cogs")),
+                  menuItem("Pipeline", 
+                           tabName = "pipeline", 
+                           icon = icon("cogs")
+                           ),
                   hr(),
-                  menuItem("Global Settings", tabName = "globalSettings", icon = icon("cogs")),
-                  menuItem("Release Notes", tabName = "releaseNotes", icon = icon("clipboard")),
-                  menuItem("Check for Updates", tabName = "checkUpdates", icon = icon("wrench")),
-                  menuItem("Help", icon = icon("question-circle"),
-                           menuSubItem("Useful Links", tabName = "usefulLinks"),
-                           menuSubItem("FAQ", tabName = "faq"),
-                           menuSubItem("Bug Report", tabName = "bugReport")),
+                  menuItem("Global Settings", 
+                           tabName = "globalSettings", 
+                           icon = icon("cogs")
+                           ),
+                  menuItem("Release Notes", 
+                           tabName = "releaseNotes", 
+                           icon = icon("clipboard")
+                           ),
+                  menuItem("Check for Updates", 
+                           tabName = "checkUpdates", 
+                           icon = icon("wrench")
+                           ),
+                  menuItem("Help", 
+                           icon = icon("question-circle"),
+                           menuSubItem("Useful Links", 
+                                       tabName = "usefulLinks"
+                                       ),
+                           menuSubItem("FAQ", 
+                                       tabName = "faq"
+                                       ),
+                           menuSubItem("Bug Report", 
+                                       tabName = "bugReport"
+                                       )
+                           ),
                   hr()
                 )
               ),
@@ -142,11 +176,16 @@ app_ui <- function(request) {
                 theme = shinythemes::shinytheme("cerulean"),
                   tabItems(
                     tabItem(tabName = "ProstarHome", class="active",
-                            mod_homepage_ui('home')),
+                            mod_homepage_ui('home')
+                            ),
                     # tabItem(tabName = "openFile", h3("Open QFeature file"),
                     #         mod_import_file_from_ui("open_file")),
-                    # tabItem(tabName = "convert", h3("Convert data"),
-                    #         mod_convert_ms_file_ui("convert_data")),
+                     tabItem(tabName = "convert", 
+                             tagList(
+                               h3("Convert datas"),
+                               uiOutput('show_convert')
+                               )
+                             ),
                     tabItem(tabName = "demoData", 
                             tagList(
                               h3("Load a demo dataset"),
@@ -157,15 +196,15 @@ app_ui <- function(request) {
                                 ),
                                 div(
                                   style="display:inline-block; vertical-align: middle; padding-right: 20px;",
-                                  shinyjs::hidden(
-                                    div(id='div_demoDataset',
+                                  #shinyjs::hidden(
+                                   # div(id='div_demoDataset',
                                         mod_open_demoDataset_ui('demo_data')
-                                    )
-                                  )
+                                   # )
+                                 # )
                                 ),
                                 div(
                                   style="display:inline-block; vertical-align: middle; padding-right: 20px;",
-                                  shinyjs::hidden(actionButton('load_dataset_btn', 'Load dataset', class=actionBtnClass))
+                                  actionButton('load_dataset_btn', 'Load dataset', class=actionBtnClass)
                                 )
                               )
                             )

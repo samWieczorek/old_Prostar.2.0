@@ -9,6 +9,34 @@ Imports:
     golem,
     shiny,
     DAPARdata2
+Collate:
+    mod_popover_for_help.R
+    app_config.R
+    global.R
+    class_process_convert.R
+    mod_bsmodal.R
+    mod_bug_report.R
+    mod_build_design_example.R
+    mod_change_assay.R
+    mod_check_updates.R
+    mod_choose_pipeline.R
+    mod_det_quant_impute_Values.R
+    mod_format_DT.R
+    mod_homepage.R
+    mod_infos_dataset.R
+    mod_insert_md.R
+    mod_launch_magellan.R
+    mod_loading_page.R
+    mod_navbar_menu.R
+    mod_observe_dynamic_colourPicker_input.R
+    mod_open_demoDataset.R
+    mod_release_notes.R
+    mod_settings.R
+    mod_test.R
+    app_server.R
+    app_ui.R
+    run_app.R
+    utils_Prostar.R
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

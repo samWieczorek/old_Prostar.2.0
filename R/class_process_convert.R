@@ -997,6 +997,7 @@ mod_build_design_example_server("designExamples")
           div(id = self$ns('FinalStep'),
               tagList(
                 textInput(self$ns("filenameToCreate"), "Enter the name of the dataset"),
+                #mod_choose_pipeline_ui('pipe'),
                 actionButton(self$ns("btn_validate_convert"), 
                              "Convert data", 
                              class = actionBtnClass)
@@ -1029,12 +1030,15 @@ mod_build_design_example_server("designExamples")
 
     Convert_server = function(session, input, output){
 
+      # self$process.var$choosePipeline <- mod_choose_pipeline_server('pipe', 
+      #                                      package = 'MSPipelines')
+      
 observe({
   req(self$process.var$designChecked)
   self$rv$dataIn
   
   shinyjs::toggle('FinalStep', condition = isTRUE(self$process.var$designChecked$valid))
-  shinyjs::toggle('ConversionDone', condition = !is.null(self$rv$dataIn) && class(self$rv$dataIn)[1] == 'QFeatures')
+  shinyjs::toggle('ConversionDone', condition = !is.null(self$rv$dataIn) && !is.na(self$rv$dataIn))
 })
 
 

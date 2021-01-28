@@ -32,14 +32,23 @@ mod_open_demoDataset_ui <- function(id){
     div(
       div(
         style="display:inline-block; vertical-align: middle; padding-right: 20px;",
-        uiOutput(ns("chooseDemoDataset")),
-        uiOutput(ns("linktoDemoPdf"))
+        div(id='div_demoDataset',
+                            tagList(
+                              uiOutput(ns("chooseDemoDataset")),
+                              uiOutput(ns("linktoDemoPdf"))
+                            )
+        )
+        ),
+      div(
+        style="display:inline-block; vertical-align: middle; padding-right: 20px;",
+        shinyjs::disabled(
+          actionButton(
+            ns('load_dataset_btn'), 
+            'Load dataset', 
+            class=actionBtnClass)
+          )
       )
       )
-      
-   # shinyjs::hidden(actionButton(ns("loadMagellan"), "Load Magellan",class = actionBtnClass))
-    #hr(),
-    #mod_infos_dataset_ui(ns("infos"))
   )
 }
 
@@ -66,10 +75,8 @@ mod_open_demoDataset_server <- function(id){
     
     rv.openDemo <- reactiveValues(
       dataRead = NULL,
-      pipe = NULL,
       dataOut = NULL
     )
-
 
     
     ### function for demo mode
@@ -95,15 +102,14 @@ mod_open_demoDataset_server <- function(id){
                       Please choose another one.")
           return(NULL)
         }
+        shinyjs::toggleState('load_dataset_btn', condition = !is.null(rv.openDemo$dataRead))
       }) # End withProgress
     }) # End observeEvent
+
     
-    
-    # 
-    # observeEvent(input$loadMagellan, {
-    #   print(paste0('dataset = ', paste0(names(rv.openDemo$dataRead), collapse=' ')))
-    # })
-    # 
+    observeEvent(input$load_dataset_btn, {
+      rv.openDemo$dataOut <- rv.openDemo$dataRead
+    })
     
     output$linktoDemoPdf <- renderUI({
       req(input$demoDataset)
@@ -116,14 +122,8 @@ mod_open_demoDataset_server <- function(id){
       # p("Dataset documentation ",a(href=filename, target='_blank', "(pdf)"))
       # 
     })
-    
-    #mod_infos_dataset_server('infos', 
-    #                         obj = reactive({rv.openDemo$dataRead})
-    #)
-    
-    reactive({rv.openDemo$dataRead })
-    
-    
+
+    reactive({rv.openDemo$dataOut })
   })
   
 }

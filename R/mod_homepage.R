@@ -15,7 +15,7 @@
 #' @importFrom shiny NS tagList 
 mod_homepage_ui <- function(id){
   ns <- NS(id)
-  browser()
+ # browser()
   tagList(
     uiOutput(ns("citationText")),
     tags$hr(),
