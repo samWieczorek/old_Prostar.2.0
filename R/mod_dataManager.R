@@ -93,7 +93,7 @@ mod_dataManager_server <- function(id){
     )
     
     rv.dm$demoData <- mod_open_demoDataset_server("rl")
-    convert <- Convert$new('convData')
+    convert <- Convert$new(ns('convData'))
     rv.dm$convertData <- convert$server(dataIn = reactive({NULL}))
     
     

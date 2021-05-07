@@ -36,13 +36,13 @@ app_server <- function( input, output, session ) {
   #
   # Code for convert tool
   #
-  convert = Convert$new('convertTool')
-  ## Get the return values of modules in charge of loading datasets
-  observe({
-    rv.core$result_convert <- convert$server(dataIn = reactive({rv.core$current.obj}))
-    })
-  shinyjs::delay(1000, rv.core$current.obj <- NA)
-  
+  # convert = Convert$new('convertTool')
+  # ## Get the return values of modules in charge of loading datasets
+  # observe({
+  #   rv.core$result_convert <- convert$server(dataIn = reactive({rv.core$current.obj}))
+  #   })
+  # shinyjs::delay(1000, rv.core$current.obj <- NA)
+  # 
   
   
   #

@@ -17,6 +17,8 @@
 ## Add one line by package you want to add as dependency
 usethis::use_package( "thinkr" )
 usethis::use_package( "DAPARdata2" ) # To call each time you need a new package
+usethis::use_package( "shinydashboard")
+usethis::use_package( "shinydashboardPlus")
 
 ## Add modules ----
 ## Create a module infrastructure in R/

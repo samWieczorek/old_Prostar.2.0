@@ -45,7 +45,7 @@ source(file.path('../../R/DataManager', 'mod_open_demo_dataset.R'), local=TRUE)$
 # source(file.path('../../R/Plots', 'mod_plots_pca.R'), local = TRUE)$value
 
 
-ui <- dashboardPagePlus(
+ui <- shinydashboardPlus::dashboardPagePlus(
   #skin="blue",
   
   # https://stackoverflow.com/questions/31711307/how-to-change-color-in-shiny-dashboard

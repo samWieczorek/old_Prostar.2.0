@@ -1,60 +1,72 @@
 library(shiny)
-library(R6)
-library(tibble)
+library(shinyjs)
+library(QFeatures)
+library(MSPipelines)
 library(Magellan)
-library(DT)
-library(rhandsontable)
+
 options(shiny.fullstacktrace = T)
+source(file.path('.', 'mod_convert.R'), local=FALSE)$value
 
-#------------------------ Class TimelineDraw --------------------------------------
-source(file.path('../../../R', 'class_process_convert.R'), local=TRUE)$value
-source(file.path('../../../R', 'mod_popover_for_help.R'), local=TRUE)$value
-source(file.path('../../../R', 'mod_format_DT.R'), local=TRUE)$value
-source(file.path('../../../R', 'global.R'), local=TRUE)$value
-source(file.path('../../../R', 'mod_build_design_example.R'), local=TRUE)$value
+verbose <- F
+redBtnClass <- "btn-danger"
+PrevNextBtnClass <- "btn-info"
+btn_success_color <- "btn-success"
+optionsBtnClass <- "info"
+btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
 
-ui = fluidPage(
+mod_test_process_ui <- function(id){
+  ns <- NS(id)
   tagList(
-    shinyjs::useShinyjs(),
-    actionButton('send', 'Send dataset'),
-    uiOutput('show_pipe')
+    uiOutput(ns('UI'))
   )
+}
+
+
+mod_test_process_server <- function(id){
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+    
+    
+    rv <- reactiveValues(
+      dataIn = Exp1_R25_prot,
+      dataOut = NULL
+    )
+    
+
+    observe({
+      rv$dataOut <- mod_nav_process_server(id = 'Convert')
+      observeEvent(rv$dataOut$dataOut()$trigger, {
+        print('totototo')
+        print(names(rv$dataOut$dataOut()$value))
+        #browser()
+      })
+      
+    }, priority=1000)
+    
+    
+    
+    
+    
+    output$UI <- renderUI({
+      mod_nav_process_ui(ns('Convert'))
+    })
+    
+  })
+}
+
+
+
+#----------------------------------------------------------------------
+ui <- fluidPage(
+  mod_test_process_ui('test_mod_process')
 )
 
 
-server = function(input, output){
-  utils::data(Exp1_R25_prot, package='DAPARdata2')
-  
-  rv <-reactiveValues(
-    dataIn = NULL,
-    convert = NULL,
-    result = NULL
-  )
-  #conv$server(dataIn = reactive({rv$dataIn}))
-  
-  rv$convert <- Convert$new('App2')
-
-  observe({
-    rv$result <- rv$convert$server(dataIn = reactive({NA}))
-    print(names(rv$result()$value))
-  },
-  priority = 1000)
-
-  #shinyjs::delay(1000, rv$dataIn <- NA)
-  
-  output$show_pipe <- renderUI({
-    req(rv$convert)
-    rv$convert$ui()
-  })
-
-  
-  observeEvent(input$send,{
-    if (input$send%%2 != 0)
-      rv$dataIn <- NA
-    else
-      rv$dataIn <- NULL
-  })
-  
+#----------------------------------------------------------------------
+server <- function(input, output){
+  mod_test_process_server('test_mod_process')
 }
-shiny::shinyApp(ui, server)
+
+
+shinyApp(ui, server)

@@ -8,13 +8,15 @@ Imports:
     config,
     golem,
     shiny,
-    DAPARdata2
+    DAPARdata2,
+    shinydashboardPlus,
+    shinydashboard
 Collate:
     mod_popover_for_help.R
     app_config.R
     global.R
-    class_process_convert.R
     mod_bsmodal.R
+    mod_dataManager.R
     mod_bug_report.R
     mod_build_design_example.R
     mod_change_assay.R

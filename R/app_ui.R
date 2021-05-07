@@ -54,7 +54,7 @@ app_ui <- function(request) {
           div(
             id = "header",
             
-            dashboardPagePlus(
+            dashboardPage(
               #skin="blue",
               
               # https://stackoverflow.com/questions/31711307/how-to-change-color-in-shiny-dashboard
@@ -74,7 +74,7 @@ app_ui <- function(request) {
               # darker green #356635
               
               
-              dashboardHeaderPlus(
+              dashboardHeader(
                 # title on top right, shrinks when sidebar collapsed
                 title = tagList(
                   tags$span(
