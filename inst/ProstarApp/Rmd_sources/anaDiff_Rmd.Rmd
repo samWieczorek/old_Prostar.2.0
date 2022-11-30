@@ -1,0 +1,23 @@
+# Differential analysis
+
+Parameters used for the differential analysis :
+
+```{r tab_params_anaDiff,out.width = "100%", echo=FALSE}
+library(DT)
+mod_staticDT_server("summaryParamsAnaDiff", 
+                    data = rv$widgets$anaDiff,
+                    filename = "AnaDiffParamsSummary")
+mod_staticDT_ui("summaryParamsAnaDiff")
+```
+                                                      
+```{r fig_calibrationALL,out.width = "100%", echo=FALSE}
+knitr::include_graphics(normalizePath(paste(tempdir(), gGraphicsFilenames$calibrationPlotAll, sep="/")))
+```
+
+
+
+
+```{r fig_volcano,out.width = "100%", echo=FALSE}
+knitr::include_graphics(normalizePath(paste(tempdir(), gGraphicsFilenames$volcanoPlot, sep="/")))
+```
+

@@ -1,44 +1,32 @@
-Package: Prostar.2.0
-Title: PKG_TITLE
-Version: 0.0.0.9000
-Authors@R: person('Samuel', 'Wieczorek', email = 'samuel.wieczorek@cea.fr', role = c('cre', 'aut'))
-Description: Prostar 2.0 provides a GUI interface for DAPAR.
-License: What license is it under?
-Imports: 
-    config,
-    golem,
-    shiny,
-    DAPARdata2,
-    shinydashboardPlus,
+Package: Prostar_2.0
+Type: Package
+Title: Provides a GUI for DAPAR
+Version: 0.9.0
+Date: 2022-11-25
+Authors@R: c(
+    person("Thomas", "Burger", email = "thomas.burger@cea.fr", role = c("aut")),
+    person("Samuel", "Wieczorek", email = "samuel.wieczorek@cea.fr", 
+    role = c("cre", "aut"))
+    )
+Description: This package provides a GUI interface for the DAPAR package. The 
+    package Prostar (Proteomics statistical analysis with R) is a Bioconductor 
+    distributed R package which provides all the necessary functions to 
+    analyze quantitative data from label-free proteomics experiments. 
+    Contrarily to most other similar R packages, it is endowed with rich and 
+    user-friendly graphical interfaces, so that no programming skill is 
+    required.
+biocViews: Proteomics, MassSpectrometry, Normalization, Preprocessing, 
+    Software, GUI
+License: Artistic-2.0
+Depends: R (>= 4.2.2)
+Suggests: BiocStyle, BiocManager, testthat, shinyTree, knitr, colourpicker, 
+    gtools, XML, R.utils, RColorBrewer, DT, shinyWidgets, sass
+Imports: shinydashboardPlus,
     shinydashboard
-Collate:
-    mod_popover_for_help.R
-    app_config.R
-    global.R
-    mod_bsmodal.R
-    mod_dataManager.R
-    mod_bug_report.R
-    mod_build_design_example.R
-    mod_change_assay.R
-    mod_check_updates.R
-    mod_choose_pipeline.R
-    mod_det_quant_impute_Values.R
-    mod_format_DT.R
-    mod_homepage.R
-    mod_infos_dataset.R
-    mod_insert_md.R
-    mod_launch_magellan.R
-    mod_loading_page.R
-    mod_navbar_menu.R
-    mod_observe_dynamic_colourPicker_input.R
-    mod_open_demoDataset.R
-    mod_release_notes.R
-    mod_settings.R
-    mod_test.R
-    app_server.R
-    app_ui.R
-    run_app.R
-    utils_Prostar.R
+NeedsCompilation: no
+RoxygenNote: 7.2.1
+Packaged: 2017-10-13 06:25:55 UTC; sw175264
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.1.1
+URL: http://www.prostar-proteomics.org/
+BugReports: https://github.com/prostarproteomics/Prostar/issues
+VignetteBuilder: knitr
