@@ -6,6 +6,8 @@ library(DaparToolshed)
 library(QFeatures)
 
 source(file.path(".", "mod_loading_page.R"), local = TRUE)$value
+source(file.path(".", "mod_main_page.R"), local = TRUE)$value
+
 source(file.path(".", "mod_homepage.R"), local = TRUE)$value
 source(file.path(".", "mod_insert_md.R"), local = TRUE)$value
 source(file.path(".", "mod_choose_pipeline.R"), local = TRUE)$value

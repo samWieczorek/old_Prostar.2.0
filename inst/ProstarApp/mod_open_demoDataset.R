@@ -3,25 +3,42 @@
 #' @title   mod_open_demo_dataset_ui and mod_open_demo_dataset_server
 #' 
 #' @description  A shiny Module.
-#'
-#' @param id shiny id
 #' 
-#' @param input internal
-#' 
-#' @param output internal
-#' 
-#' @param session internal
-#' 
-#' @param pipeline.def xxx
-#' 
-#' @return An object of class [`xxxx`]
-#' 
-#' @rdname mod_open_demo_dataset
+#' @name mod_open_demo_dataset
 #'
 #' @keywords internal
 #' 
-#' @export 
+#' @examples 
+#' if (interactive()){
+#' ui <- fluidPage(
+#' tagList(
+#'   mod_open_demoDataset_ui("demo"),
+#'   textOutput('res')
+#' )
+#' )
 #' 
+#' server <- function(input, output, session) {
+#'   rv <- reactiveValues(
+#'     obj = NULL
+#'   )
+#'   rv$obj <- mod_open_demoDataset_server("demo")
+#'   
+#'   output$res <- renderText({
+#'     rv$obj()
+#'     paste0('Names of the datasets: ', names(rv$obj()))
+#'   })
+  #' }
+#' 
+#' shinyApp(ui = ui, server = server)
+#' }
+#' 
+NULL
+
+
+
+#' @param id xxx
+#' @export 
+#' @rdname mod_open_demo_dataset
 #' @importFrom shiny NS tagList 
 #' @import shinyjs
 #' 
@@ -58,6 +75,8 @@ mod_open_demoDataset_ui <- function(id){
 #' 
 #' @export
 #' 
+#' @param id xxx
+#' 
 #' @keywords internal
 #' 
 #' @import DAPARdata2
@@ -72,6 +91,7 @@ mod_open_demoDataset_server <- function(id){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     
+    .package <- 'DaparToolshedData'
     
     rv.openDemo <- reactiveValues(
       dataRead = NULL,
@@ -81,10 +101,16 @@ mod_open_demoDataset_server <- function(id){
     
     ### function for demo mode
     output$chooseDemoDataset <- renderUI({
-      print("DAPARdata is loaded correctly")
+      
+      if (!requireNamespace(.package, quietly = TRUE)) {
+        stop("Please install ", .package, ": 
+            BiocManager::install('", .package, "')")
+      }
+      
+      
       selectInput(ns("demoDataset"),
                   "Demo dataset",
-                  choices = c('None', utils::data(package="DAPARdata2")$results[,"Item"]),
+                  choices = c('None', utils::data(package=.package)$results[,"Item"]),
                   selected = character(0),
                   width='200px')
     })
@@ -95,7 +121,7 @@ mod_open_demoDataset_server <- function(id){
       nSteps <- 1
       withProgress(message = '',detail = '', value = 0, {
         incProgress(1/nSteps, detail = 'Loading dataset')
-        utils::data(list=input$demoDataset, package='DAPARdata2')
+        utils::data(list=input$demoDataset, package=.package)
         rv.openDemo$dataRead <- BiocGenerics::get(input$demoDataset)
         if (class(rv.openDemo$dataRead)!="QFeatures") {
           shinyjs::info("Warning : this file is not a QFeatures file ! 

@@ -16,8 +16,7 @@ enableJIT(3)
 shinyServer( 
 
     function( input, output, session ) {
-  # List the first level callModules here
-  
+   
   observeEvent(input$ReloadProstar, {
     js$resetProstar()
   })
@@ -38,8 +37,7 @@ shinyServer(
     current.pipeline = NULL
   )
   
-  rv.core$pipeline.name <- mod_choose_pipeline_server('pipe', 
-    package = 'MSPipelines')
+  rv.core$pipeline.name <- mod_choose_pipeline_server('pipe', package = 'MSPipelines')
   #
   # Code for convert tool
   #
@@ -57,10 +55,11 @@ shinyServer(
   #
   rv.core$result_openDemoDataset <- mod_open_demoDataset_server('demo_data')
   
-  
-  
-  
-  
+  observeEvent(rv.core$result_openDemoDataset(),{
+     rv.core$current.obj <- rv.core$result_openDemoDataset()
+     #rv.core$current.pipeline <- rv.core$tmp_dataManager$openFile()$pipeline
+     print('rv.core$current.obj has changed')
+   })
   
   
   #rv.core$result_openFile <- mod_open_dataset_server('moduleOpenDataset')
@@ -119,7 +118,8 @@ shinyServer(
   
   
   # mimics loading data > body content and inactivation of import menus in sidebar
-  observeEvent(rv.core$current.pipeline, ignoreNULL=FALSE, { #https://stackoverflow.com/questions/48278111/disable-enable-click-on-dashboard-sidebar-in-shiny
+  observeEvent(rv.core$current.pipeline, ignoreNULL=FALSE, { 
+    #https://stackoverflow.com/questions/48278111/disable-enable-click-on-dashboard-sidebar-in-shiny
     
     if(is.null(rv.core$current.pipeline)){
       # show sidebar and button sidebar
@@ -145,6 +145,8 @@ shinyServer(
   
   
   #---------------------------Server modules calls---------------------------------------------------#
+  DaparViz::mod_all_ds_server('daparviz', reactive({rv.core$current.obj}))
+  
   mod_test_server('tutu')
   mod_homepage_server('home')
   #mod_settings_server("global_settings", obj = reactive({Exp1_R25_prot}))
@@ -160,7 +162,7 @@ shinyServer(
   # Once the server part is loaded, hide the loading page 
   # and show th main content
   shinyjs::hide(id = "loading_page", anim = FALSE)
-  shinyjs::show("main_content", anim = TRUE, animType = "fade")
+  shinyjs::show("main_page", anim = TRUE, animType = "fade")
   
     }
 )
