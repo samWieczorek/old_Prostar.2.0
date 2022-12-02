@@ -4,6 +4,7 @@ DAPAR.loc <- DAPARdata.loc <- Prostar.loc <- NULL
 library(fresh)
 library(DaparToolshed)
 library(QFeatures)
+library(DaparViz)
 
 source(file.path(".", "mod_loading_page.R"), local = TRUE)$value
 source(file.path(".", "mod_main_page.R"), local = TRUE)$value

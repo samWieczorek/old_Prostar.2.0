@@ -24,7 +24,7 @@ Suggests: BiocStyle, BiocManager, testthat, shinyTree, knitr, colourpicker,
 Imports: shinydashboardPlus,
     shinydashboard
 NeedsCompilation: no
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Packaged: 2017-10-13 06:25:55 UTC; sw175264
 Encoding: UTF-8
 URL: http://www.prostar-proteomics.org/
